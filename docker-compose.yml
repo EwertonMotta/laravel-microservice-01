@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+    # Image Micro 01
+    micro_01:
+        build:
+            args:
+                user: emotta
+                uid: 1001
+            context: ./
+            dockerfile: Dockerfile
+        image: laravel-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - microservices
+
+    # Nginx
+    nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - 8100:80
+        volumes:
+            - ./docker/nginx/:/etc/nginx/conf.d/
+            - ./:/var/www
+        networks:
+            - microservices
+
+    # MySQL Micro 01
+    db_micro_01:
+        image: mysql:5.7.22
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+        ports:
+            - 3360:3306
+        volumes:
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        networks:
+            - microservices
+
+networks:
+    microservices:
+        driver: bridge
