@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\{
-    CategoryController
+    CategoryController,
+    CompanyController
 };
 
 Route::get('/', function () {
@@ -11,3 +12,4 @@ Route::get('/', function () {
 });
 
 Route::apiResource('categories', CategoryController::class);
+Route::apiResource('companies', CompanyController::class);
